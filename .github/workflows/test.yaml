@@ -1,4 +1,4 @@
-name: Test
+name: Listing S3 buckts
 
 on:
   push:
@@ -7,8 +7,21 @@ on:
   workflow_dispatch:
   
 jobs:
-  log_message:
+  listing_buckets:
     runs-on: ubuntu-latest
     steps:
-      - name: Log message
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.IAM_ROLE }} 
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: List S3 buckets
+        env:
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws s3 ls
+
+      - name: Say Hello
         run: echo "Hello World from ${{ github.repository }}"
